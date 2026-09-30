@@ -39,4 +39,22 @@ public class SubscriberService {
         return subscribers.stream().filter(subscriber -> subscriber.id().equals(id)).findFirst();
     }
 
+    public Boolean deleteSubscriberById(Long id) {
+        return subscribers.removeIf(subscriber -> subscriber.id().equals(id));
+    }
+
+    public Subscriber updateSubscriber(Subscriber givenSubscriber) {
+        if (givenSubscriber == null || givenSubscriber.id() == null) {
+            return null;
+        }
+        if (deleteSubscriberById(givenSubscriber.id())) {
+            Subscriber updatedSubscriber = new Subscriber(givenSubscriber.id(), givenSubscriber.name(),
+                    givenSubscriber.msisdn(), givenSubscriber.planName(), givenSubscriber.status());
+            subscribers.add(updatedSubscriber);
+                    return updatedSubscriber;
+        } else {
+            return null;
+        }
+
+    }
 }
