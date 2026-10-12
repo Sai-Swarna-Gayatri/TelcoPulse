@@ -1,0 +1,69 @@
+2026-10-12T16:32:07.827-04:00  INFO 14028 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : Starting TelcopulseApplication using Java 26 with PID 14028 (E:\Java\telcopulse\target\classes started by saisw in E:\Java\telcopulse)
+2026-10-12T16:32:07.842-04:00 DEBUG 14028 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-10-12T16:32:07.844-04:00  INFO 14028 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-10-12T16:32:07.965-04:00  INFO 14028 --- [telcopulse] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-12T16:32:07.967-04:00  INFO 14028 --- [telcopulse] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-12T16:32:11.578-04:00  INFO 14028 --- [telcopulse] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-10-12T16:32:11.629-04:00  INFO 14028 --- [telcopulse] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-12T16:32:11.633-04:00  INFO 14028 --- [telcopulse] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-12T16:32:11.792-04:00  INFO 14028 --- [telcopulse] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3822 ms
+2026-10-12T16:32:12.360-04:00  INFO 14028 --- [telcopulse] [restartedMain] c.s.t.service.SubscriberService          : Initializing seed data subscribers.....
+2026-10-12T16:32:13.953-04:00  INFO 14028 --- [telcopulse] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2026-10-12T16:32:14.267-04:00  INFO 14028 --- [telcopulse] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-10-12T16:32:14.387-04:00  INFO 14028 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : Started TelcopulseApplication in 7.678 seconds (process running for 8.815)
+2026-10-12T16:32:33.295-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-12T16:32:33.296-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-12T16:32:33.302-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-10-12T16:32:33.389-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-3] c.s.t.service.SubscriberService          : fetching all subscribers. Total count 2
+2026-10-12T16:32:54.758-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-1] c.s.t.service.SubscriberService          : Searching for subscriber with id 101 
+2026-10-12T16:32:54.763-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-1] c.s.t.service.SubscriberService          : Searching for subscriber with id 101 
+2026-10-12T16:33:00.983-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-2] c.s.t.service.SubscriberService          : Searching for subscriber with id 107 
+2026-10-12T16:35:31.051-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-5] c.s.t.service.SubscriberService          : New subscriber created successfully with id 103 
+2026-10-12T16:35:38.484-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-6] c.s.t.service.SubscriberService          : fetching all subscribers. Total count 3
+2026-10-12T16:35:49.689-04:00  WARN 14028 --- [telcopulse] [http-nio-8080-exec-8] c.s.t.service.SubscriberService          : Attempted to delete subscriber with id 19, but record was not found
+2026-10-12T16:35:55.759-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-9] c.s.t.service.SubscriberService          : Subscriber with id 102 deleted successfully
+2026-10-12T16:36:12.219-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-7] c.s.t.service.SubscriberService          : Searching for subscriber with id 101 
+2026-10-12T16:36:12.221-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-7] c.s.t.service.SubscriberService          : Searching for subscriber with id 101 
+2026-10-12T16:36:47.438-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-10] c.s.t.service.SubscriberService          : Searching for subscriber with id 101 
+2026-10-12T16:36:47.455-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-10] c.s.t.service.SubscriberService          : Searching for subscriber with id 101 
+2026-10-12T16:36:59.272-04:00  WARN 14028 --- [telcopulse] [http-nio-8080-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PUT' is not supported]
+2026-10-12T16:37:53.139-04:00  WARN 14028 --- [telcopulse] [http-nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PUT' is not supported]
+2026-10-12T16:39:12.839-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Subscriber with id 101 deleted successfully
+2026-10-12T16:39:12.876-04:00  INFO 14028 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Subscriber with id 101 updated successfully
+2026-10-12T16:39:12.912-04:00 DEBUG 14028 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Updated subscriber details: Subscriber[id=101, name=John Deoee, msisdn=+14045450243, planName=Prepaid Flex, status=ACTIVE]
+2026-10-12T16:39:24.985-04:00  WARN 14028 --- [telcopulse] [http-nio-8080-exec-5] c.s.t.service.SubscriberService          : Attempted to delete subscriber with id 10109, but record was not found
+2026-10-12T16:39:24.991-04:00  WARN 14028 --- [telcopulse] [http-nio-8080-exec-5] c.s.t.service.SubscriberService          : Update failed: subscriber with id 10109 not found
+2026-10-12T16:39:55.489-04:00  INFO 14028 --- [telcopulse] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-12T16:39:55.510-04:00  INFO 14028 --- [telcopulse] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-12T16:46:25.672-04:00  INFO 8112 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : Starting TelcopulseApplication using Java 26 with PID 8112 (E:\Java\telcopulse\target\classes started by saisw in E:\Java\telcopulse)
+2026-10-12T16:46:25.679-04:00 DEBUG 8112 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : Running with Spring Boot v4.1.1, Spring v7.0.9
+2026-10-12T16:46:25.682-04:00  INFO 8112 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-10-12T16:46:25.825-04:00  INFO 8112 --- [telcopulse] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-12T16:46:25.826-04:00  INFO 8112 --- [telcopulse] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-12T16:46:31.424-04:00  INFO 8112 --- [telcopulse] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-10-12T16:46:31.494-04:00  INFO 8112 --- [telcopulse] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-12T16:46:31.499-04:00  INFO 8112 --- [telcopulse] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-12T16:46:31.661-04:00  INFO 8112 --- [telcopulse] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 5833 ms
+2026-10-12T16:46:32.566-04:00  INFO 8112 --- [telcopulse] [restartedMain] c.s.t.service.SubscriberService          : Initializing seed data subscribers.....
+2026-10-12T16:46:35.272-04:00  INFO 8112 --- [telcopulse] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2026-10-12T16:46:35.927-04:00  INFO 8112 --- [telcopulse] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-10-12T16:46:36.018-04:00  INFO 8112 --- [telcopulse] [restartedMain] c.ssg.telcopulse.TelcopulseApplication   : Started TelcopulseApplication in 12.547 seconds (process running for 15.186)
+2026-10-12T16:46:48.534-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-12T16:46:48.540-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-12T16:46:48.551-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 10 ms
+2026-10-12T16:46:49.074-04:00  WARN 8112 --- [telcopulse] [http-nio-8080-exec-1] c.s.t.service.SubscriberService          : Attempted to delete subscriber with id 10109, but record was not found
+2026-10-12T16:46:49.075-04:00  WARN 8112 --- [telcopulse] [http-nio-8080-exec-1] c.s.t.service.SubscriberService          : Update failed: subscriber with id 10109 not found
+2026-10-12T16:46:57.426-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Subscriber with id 101 deleted successfully
+2026-10-12T16:46:57.525-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Subscriber with id 101 updated successfully
+2026-10-12T16:46:57.556-04:00 DEBUG 8112 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Updated subscriber details: Subscriber[id=101, name=John Deoee, msisdn=+14045450243, planName=Prepaid Flex, status=ACTIVE]
+2026-10-12T16:46:57.609-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Subscriber with id 101 deleted successfully
+2026-10-12T16:46:57.620-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Subscriber with id 101 updated successfully
+2026-10-12T16:46:57.621-04:00 DEBUG 8112 --- [telcopulse] [http-nio-8080-exec-4] c.s.t.service.SubscriberService          : Updated subscriber details: Subscriber[id=101, name=John Deoee, msisdn=+14045450243, planName=Prepaid Flex, status=ACTIVE]
+2026-10-12T16:47:02.342-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-5] c.s.t.service.SubscriberService          : fetching all subscribers. Total count 2
+2026-10-12T16:47:12.071-04:00  WARN 8112 --- [telcopulse] [http-nio-8080-exec-8] c.s.t.service.SubscriberService          : Attempted to delete subscriber with id 109, but record was not found
+2026-10-12T16:47:16.668-04:00  INFO 8112 --- [telcopulse] [http-nio-8080-exec-9] c.s.t.service.SubscriberService          : Subscriber with id 101 deleted successfully
+2026-10-12T16:47:46.554-04:00  WARN 8112 --- [telcopulse] [http-nio-8080-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PUT' is not supported]
+2026-10-12T16:47:51.000-04:00  WARN 8112 --- [telcopulse] [http-nio-8080-exec-3] c.s.t.service.SubscriberService          : Attempted to delete subscriber with id 101108, but record was not found
+2026-10-12T16:47:51.025-04:00  WARN 8112 --- [telcopulse] [http-nio-8080-exec-3] c.s.t.service.SubscriberService          : Update failed: subscriber with id 101108 not found
+2026-10-12T16:48:09.659-04:00  INFO 8112 --- [telcopulse] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-12T16:48:09.684-04:00  INFO 8112 --- [telcopulse] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
