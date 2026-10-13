@@ -28,12 +28,8 @@ public class SubscriberController {
 
     // GET /api/v1/subscribers/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Subscriber>> getSubscriberById(@PathVariable Long id) {
-        Optional<Subscriber> subscriberbyId = subscriberService.getSubscriberById(id);      
-        if(subscriberbyId.isPresent())
+    public ResponseEntity<Subscriber> getSubscriberById(@PathVariable Long id) {   
             return ResponseEntity.ok(subscriberService.getSubscriberById(id));
-        else
-            return ResponseEntity.notFound().build();
     }
 
     // POST /api/v1/subscribers
@@ -45,24 +41,14 @@ public class SubscriberController {
     // Delete /api/v1/subscribers/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSubscriberById(@PathVariable Long id) {
-        if (subscriberService.deleteSubscriberById(id)) {
+            subscriberService.deleteSubscriberById(id);
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     // Update /api/v1/subscribers
     @PutMapping
     public ResponseEntity<Subscriber> updateSubscriber(@RequestBody Subscriber subscriber) {
-        if(subscriberService.updateSubscriber(subscriber)!=null)
-        {
              return ResponseEntity.ok(subscriberService.updateSubscriber(subscriber));
-        }
-        else
-        {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }    
     }
 
 }

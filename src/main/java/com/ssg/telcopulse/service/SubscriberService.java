@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.ssg.telcopulse.exception.SubscriberNotFoundException;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.model.SubscriberStatus;
 
@@ -42,37 +43,33 @@ public class SubscriberService {
         return newSub;
     }
 
-    public Optional<Subscriber> getSubscriberById(Long id) {
+    public Subscriber getSubscriberById(Long id) {
         log.info("Searching for subscriber with id {} ", id);
-        return subscribers.stream().filter(subscriber -> subscriber.id().equals(id)).findFirst();
+        return subscribers.stream().filter(subscriber -> subscriber.id().equals(id)).findFirst()
+                .orElseThrow(() -> new SubscriberNotFoundException(id));
     }
 
-    public Boolean deleteSubscriberById(Long id) {
+    public void deleteSubscriberById(Long id) {
         boolean removed = subscribers.removeIf(subscriber -> subscriber.id().equals(id));
         if (removed) {
             log.info("Subscriber with id {} deleted successfully", id);
         } else {
             log.warn("Attempted to delete subscriber with id {}, but record was not found", id);
+            throw new SubscriberNotFoundException(id);
         }
-        return removed;
     }
 
     public Subscriber updateSubscriber(Subscriber givenSubscriber) {
         if (givenSubscriber == null || givenSubscriber.id() == null) {
             log.warn("Update failed: invalid or null subscriber input provided");
-            return null;
+            throw new IllegalArgumentException("invalid or null subscriber input provided");
         }
-        if (deleteSubscriberById(givenSubscriber.id())) {
-            Subscriber updatedSubscriber = new Subscriber(givenSubscriber.id(), givenSubscriber.name(),
-                    givenSubscriber.msisdn(), givenSubscriber.planName(), givenSubscriber.status());
-            subscribers.add(updatedSubscriber);
-           log.info("Subscriber with id {} updated successfully", updatedSubscriber.id());
-            log.debug("Updated subscriber details: {}", updatedSubscriber); // Passes record toString()
-            return updatedSubscriber;
-        } else {
-            log.warn("Update failed: subscriber with id {} not found", givenSubscriber.id());
-            return null;
-        }
-
+        deleteSubscriberById(givenSubscriber.id());
+        Subscriber updatedSubscriber = new Subscriber(givenSubscriber.id(), givenSubscriber.name(),
+                givenSubscriber.msisdn(), givenSubscriber.planName(), givenSubscriber.status());
+        subscribers.add(updatedSubscriber);
+        log.info("Subscriber with id {} updated successfully", updatedSubscriber.id());
+        log.debug("Updated subscriber details: {}", updatedSubscriber); // Passes record toString()
+        return updatedSubscriber;
     }
 }
