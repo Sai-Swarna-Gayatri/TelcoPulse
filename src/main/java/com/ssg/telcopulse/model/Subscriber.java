@@ -46,5 +46,18 @@ public class Subscriber {
         this.planName = planName;
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Subscriber{");
+        sb.append("id=").append(id);
+        sb.append(", name=").append(name);
+        sb.append(", msisdn=").append(msisdn);
+        sb.append(", planName=").append(planName);
+        sb.append(", status=").append(status);
+        sb.append('}');
+        return sb.toString();
+    }
 }
 

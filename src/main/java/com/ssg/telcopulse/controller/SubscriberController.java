@@ -1,13 +1,13 @@
 package com.ssg.telcopulse.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssg.telcopulse.model.Subscriber;
+import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.service.SubscriberService;
 
 @RestController
@@ -24,6 +24,18 @@ public class SubscriberController {
     @GetMapping
     public ResponseEntity<List<Subscriber>> getAllSubscribers() {
         return ResponseEntity.ok(subscriberService.getAllSubscribers());
+    }
+
+    // GET /api/v1/subscribers?status=
+    @GetMapping(params = "status")
+    public ResponseEntity<List<Subscriber>> getSubscribersByStatus(@RequestParam SubscriberStatus status) {
+        return ResponseEntity.ok(subscriberService.getSubscribersByStatus(status));
+    }
+
+    // GET /api/v1/subscribers?status=SubscriberStatus&plan=planName
+    @GetMapping(params = {"status","plan"})
+    public ResponseEntity<List<Subscriber>> getSubscribersByStatusAndPlan(@RequestParam SubscriberStatus status, @RequestParam String plan) {
+        return ResponseEntity.ok(subscriberService.getSubscribersByStatusAndPlan(status,plan));
     }
 
     // GET /api/v1/subscribers/{id}

@@ -37,6 +37,16 @@ public class SubscriberService {
         return subscriberRepository.findAll();
     }
 
+    public List<Subscriber> getSubscribersByStatus(SubscriberStatus status) {
+        log.info("fetching all subscribers with {} status", status);
+        return subscriberRepository.findByStatus(status);
+    }
+
+     public List<Subscriber> getSubscribersByStatusAndPlan(SubscriberStatus status,String plan) {
+        log.info("fetching all subscribers with {} status and {} plan", status,plan);
+        return subscriberRepository.findByStatusAndPlan(status,plan);
+    }
+
     public Subscriber createSubscriber(Subscriber input) {
         log.info("Creating new subscribers ");
         return subscriberRepository.save(input);
