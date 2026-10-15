@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.ssg.telcopulse.dto.SubscriberRequestDto;
+import com.ssg.telcopulse.dto.SubscriberResponseDto;
+import com.ssg.telcopulse.dto.SubscriberMapper;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.repository.SubscriberRepository;
@@ -32,50 +35,56 @@ public class SubscriberService {
         }
     }
 
-    public List<Subscriber> getAllSubscribers() {
+    public List<SubscriberResponseDto> getAllSubscribers() {
         log.info("fetching all subscribers. Total count {}", subscriberRepository.count());
-        return subscriberRepository.findAll();
+        return subscriberRepository.findAll().stream().map(SubscriberMapper::toDto).toList();
     }
 
-    public List<Subscriber> getSubscribersByStatus(SubscriberStatus status) {
+    public List<SubscriberResponseDto> getSubscribersByStatus(SubscriberStatus status) {
         log.info("fetching all subscribers with {} status", status);
-        return subscriberRepository.findByStatus(status);
+        return subscriberRepository.findByStatus(status).stream().map(SubscriberMapper::toDto).toList();
     }
 
-     public List<Subscriber> getSubscribersByStatusAndPlan(SubscriberStatus status,String plan) {
+     public List<SubscriberResponseDto> getSubscribersByStatusAndPlan(SubscriberStatus status,String plan) {
         log.info("fetching all subscribers with {} status and {} plan", status,plan);
-        return subscriberRepository.findByStatusAndPlan(status,plan);
+        return subscriberRepository.findByStatusAndPlan(status,plan).stream().map(SubscriberMapper::toDto).toList();
     }
 
-    public Subscriber createSubscriber(Subscriber input) {
-        log.info("Creating new subscribers ");
-        return subscriberRepository.save(input);
+    public SubscriberResponseDto createSubscriber(SubscriberRequestDto requestDto) {
+        Subscriber input = SubscriberMapper.toEntity(requestDto);
+        Subscriber created = subscriberRepository.save(input);
+        log.info("Creating new subscriber with id {} " ,created.getId());
+        return SubscriberMapper.toDto(created);
     }
 
-    public Subscriber getSubscriberById(Long id) {
+    public SubscriberResponseDto getSubscriberById(Long id) {
         log.info("Searching for subscriber with id {} ", id);
-        return subscriberRepository.findById(id).orElseThrow(() -> new SubscriberNotFoundException(id));
+        Subscriber subscriber = subscriberRepository.findById(id).orElseThrow(() -> new SubscriberNotFoundException(id));
+        return SubscriberMapper.toDto(subscriber);
     }
 
     public void deleteSubscriberById(Long id) {
-        Subscriber existingSubscriber = getSubscriberById(id);
+        Subscriber existingSubscriber = subscriberRepository.findById(id)
+                .orElseThrow(() -> new SubscriberNotFoundException(id));
         subscriberRepository.delete(existingSubscriber);
+        log.info("Deleted subscriber with id {}", id);
     }
 
-    public Subscriber updateSubscriber(Subscriber givenSubscriber) {
-        if (givenSubscriber == null || givenSubscriber.getId() == null) {
+    public SubscriberResponseDto updateSubscriber(Long id,SubscriberRequestDto givenSubscriber) {
+        if (id == null || givenSubscriber == null) {
             log.warn("Update failed: invalid or null subscriber input provided");
             throw new IllegalArgumentException("invalid or null subscriber input provided");
         }
-        Subscriber existing = getSubscriberById(givenSubscriber.getId());
-        existing.setName(givenSubscriber.getName());
-        existing.setMsisdn(givenSubscriber.getMsisdn());
-        existing.setPlanName(givenSubscriber.getPlanName());
-        existing.setStatus(givenSubscriber.getStatus());
+        Subscriber existing = subscriberRepository.findById(id)
+                .orElseThrow(() -> new SubscriberNotFoundException(id));
+        existing.setName(givenSubscriber.name());
+        existing.setMsisdn(givenSubscriber.msisdn());
+        existing.setPlanName(givenSubscriber.planName());
+        existing.setStatus(givenSubscriber.status());
 
         Subscriber updatedSubscriber = subscriberRepository.save(existing);
         log.info("Subscriber with id {} updated successfully", updatedSubscriber.getId());
         log.debug("Updated subscriber details: {}", updatedSubscriber); // Passes record toString()
-        return updatedSubscriber;
+        return SubscriberMapper.toDto(updatedSubscriber);
     }
 }

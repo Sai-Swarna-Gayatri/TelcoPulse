@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
-import com.ssg.telcopulse.model.Subscriber;
+import com.ssg.telcopulse.dto.SubscriberRequestDto;
+import com.ssg.telcopulse.dto.SubscriberResponseDto;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.service.SubscriberService;
 
@@ -22,32 +24,32 @@ public class SubscriberController {
 
     // GET /api/v1/subscribers
     @GetMapping
-    public ResponseEntity<List<Subscriber>> getAllSubscribers() {
+    public ResponseEntity<List<SubscriberResponseDto>> getAllSubscribers() {
         return ResponseEntity.ok(subscriberService.getAllSubscribers());
     }
 
     // GET /api/v1/subscribers?status=
     @GetMapping(params = "status")
-    public ResponseEntity<List<Subscriber>> getSubscribersByStatus(@RequestParam SubscriberStatus status) {
+    public ResponseEntity<List<SubscriberResponseDto>> getSubscribersByStatus(@RequestParam SubscriberStatus status) {
         return ResponseEntity.ok(subscriberService.getSubscribersByStatus(status));
     }
 
     // GET /api/v1/subscribers?status=SubscriberStatus&plan=planName
     @GetMapping(params = {"status","plan"})
-    public ResponseEntity<List<Subscriber>> getSubscribersByStatusAndPlan(@RequestParam SubscriberStatus status, @RequestParam String plan) {
+    public ResponseEntity<List<SubscriberResponseDto>> getSubscribersByStatusAndPlan(@RequestParam SubscriberStatus status, @RequestParam String plan) {
         return ResponseEntity.ok(subscriberService.getSubscribersByStatusAndPlan(status,plan));
     }
 
     // GET /api/v1/subscribers/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Subscriber> getSubscriberById(@PathVariable Long id) {   
+    public ResponseEntity<SubscriberResponseDto> getSubscriberById(@PathVariable Long id) {   
             return ResponseEntity.ok(subscriberService.getSubscriberById(id));
     }
 
     // POST /api/v1/subscribers
     @PostMapping
-    public ResponseEntity<Subscriber> createSubscriber(@RequestBody Subscriber subscriber) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(subscriberService.createSubscriber(subscriber));
+    public ResponseEntity<SubscriberResponseDto> createSubscriber(@Valid @RequestBody SubscriberRequestDto requestSubscriber) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(subscriberService.createSubscriber(requestSubscriber));
     }
 
     // Delete /api/v1/subscribers/{id}
@@ -58,9 +60,9 @@ public class SubscriberController {
     }
 
     // Update /api/v1/subscribers
-    @PutMapping
-    public ResponseEntity<Subscriber> updateSubscriber(@RequestBody Subscriber subscriber) {
-             return ResponseEntity.ok(subscriberService.updateSubscriber(subscriber));
+    @PutMapping("/{id}")
+    public ResponseEntity<SubscriberResponseDto> updateSubscriber(@PathVariable Long id,@Valid @RequestBody SubscriberRequestDto requestSubscriber) {
+             return ResponseEntity.ok(subscriberService.updateSubscriber(id,requestSubscriber));
     }
 
 }
