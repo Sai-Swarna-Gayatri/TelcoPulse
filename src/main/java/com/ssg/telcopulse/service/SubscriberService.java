@@ -5,7 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
@@ -35,14 +36,16 @@ public class SubscriberService {
         }
     }
 
-    public List<SubscriberResponseDto> getAllSubscribers() {
-        log.info("fetching all subscribers. Total count {}", subscriberRepository.count());
-        return subscriberRepository.findAll().stream().map(SubscriberMapper::toDto).toList();
+    //Paginated Data
+    public Page<SubscriberResponseDto> getAllSubscribers(Pageable pageable) {
+        log.info("Fetching paginated subscribers - Page:{}, Size:{}, Sort:{}",
+                                                    pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort());
+        return subscriberRepository.findAll(pageable).map(SubscriberMapper::toDto);
     }
 
-    public List<SubscriberResponseDto> getSubscribersByStatus(SubscriberStatus status) {
+    public Page<SubscriberResponseDto> getSubscribersByStatus(SubscriberStatus status,Pageable pageable) {
         log.info("fetching all subscribers with {} status", status);
-        return subscriberRepository.findByStatus(status).stream().map(SubscriberMapper::toDto).toList();
+        return subscriberRepository.findByStatus(status,pageable).map(SubscriberMapper::toDto);
     }
 
      public List<SubscriberResponseDto> getSubscribersByStatusAndPlan(SubscriberStatus status,String plan) {

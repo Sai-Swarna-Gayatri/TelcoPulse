@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
 import com.ssg.telcopulse.model.SubscriberStatus;
@@ -23,15 +24,17 @@ public class SubscriberController {
     }
 
     // GET /api/v1/subscribers
+    // GET /api/v1/subscribers?page=0&size=2&sort=name,asc
     @GetMapping
-    public ResponseEntity<List<SubscriberResponseDto>> getAllSubscribers() {
-        return ResponseEntity.ok(subscriberService.getAllSubscribers());
+    public ResponseEntity<Page<SubscriberResponseDto>> getAllSubscribers(Pageable pageable) {
+        return ResponseEntity.ok(subscriberService.getAllSubscribers(pageable));
     }
 
+    //Static Pagination
     // GET /api/v1/subscribers?status=
     @GetMapping(params = "status")
-    public ResponseEntity<List<SubscriberResponseDto>> getSubscribersByStatus(@RequestParam SubscriberStatus status) {
-        return ResponseEntity.ok(subscriberService.getSubscribersByStatus(status));
+    public ResponseEntity<Page<SubscriberResponseDto>> getSubscribersByStatus(@RequestParam SubscriberStatus status,Pageable pageable) {
+        return ResponseEntity.ok(subscriberService.getSubscribersByStatus(status,pageable));
     }
 
     // GET /api/v1/subscribers?status=SubscriberStatus&plan=planName

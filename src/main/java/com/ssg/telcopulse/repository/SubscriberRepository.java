@@ -7,13 +7,15 @@ import org.springframework.stereotype.Repository;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 @Repository
 //JpaRepository<Entity,PrimaryKey Type>
 public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
 
     //Derived Query Method
-    public List<Subscriber> findByStatus(SubscriberStatus status);
+    public Page<Subscriber> findByStatus(SubscriberStatus status,Pageable pageable);
 
     //Custom JPQL
     @Query("Select s from Subscriber s where s.status = :status and s.planName LIKE %:plan%")
