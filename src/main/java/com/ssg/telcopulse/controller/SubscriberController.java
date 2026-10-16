@@ -1,7 +1,5 @@
 package com.ssg.telcopulse.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +23,15 @@ public class SubscriberController {
 
     // GET /api/v1/subscribers
     // GET /api/v1/subscribers?page=0&size=2&sort=name,asc
+    //Adding Dynamic Filter
     @GetMapping
-    public ResponseEntity<Page<SubscriberResponseDto>> getAllSubscribers(Pageable pageable) {
-        return ResponseEntity.ok(subscriberService.getAllSubscribers(pageable));
+    public ResponseEntity<Page<SubscriberResponseDto>> getAllSubscribers(@RequestParam(required=false) String name,@RequestParam(required=false) SubscriberStatus status, @RequestParam(required=false) String planName,@RequestParam(required=false) String msisdn,Pageable pageable) {
+        return ResponseEntity.ok(subscriberService.getAllSubscribers(name,status,planName,msisdn,pageable));
     }
 
-    //Static Pagination
+    //Static Filter
     // GET /api/v1/subscribers?status=
-    @GetMapping(params = "status")
+  /*   @GetMapping(params = "status")
     public ResponseEntity<Page<SubscriberResponseDto>> getSubscribersByStatus(@RequestParam SubscriberStatus status,Pageable pageable) {
         return ResponseEntity.ok(subscriberService.getSubscribersByStatus(status,pageable));
     }
@@ -41,7 +40,7 @@ public class SubscriberController {
     @GetMapping(params = {"status","plan"})
     public ResponseEntity<List<SubscriberResponseDto>> getSubscribersByStatusAndPlan(@RequestParam SubscriberStatus status, @RequestParam String plan) {
         return ResponseEntity.ok(subscriberService.getSubscribersByStatusAndPlan(status,plan));
-    }
+    } */
 
     // GET /api/v1/subscribers/{id}
     @GetMapping("/{id}")
