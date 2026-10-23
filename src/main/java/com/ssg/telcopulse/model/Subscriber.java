@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 
 
@@ -39,6 +40,9 @@ public class Subscriber {
     @Column(nullable=false)
     @Enumerated(EnumType.STRING)
     private SubscriberStatus status;
+
+    @OneToOne(mappedBy="subscriber", optional=true, cascade = CascadeType.REMOVE)
+    private SubscriberProfile profile;
 
     public Subscriber(String name, String msisdn, String planName, SubscriberStatus status) {
         this.name = name;

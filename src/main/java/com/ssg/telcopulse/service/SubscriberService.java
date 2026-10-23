@@ -13,6 +13,9 @@ import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.repository.SubscriberRepository;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.repository.specification.SubscriberSpecification;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.domain.Specification;
 
 @Service
@@ -85,6 +88,7 @@ public class SubscriberService {
         log.info("Deleted subscriber with id {}", id);
     }
 
+    @Transactional 
     public SubscriberResponseDto updateSubscriber(Long id, SubscriberRequestDto givenSubscriber) {
         if (id == null || givenSubscriber == null) {
             log.warn("Update failed: invalid or null subscriber input provided");
@@ -96,9 +100,10 @@ public class SubscriberService {
         existing.setPlanName(givenSubscriber.planName());
         existing.setStatus(givenSubscriber.status());
 
-        Subscriber updatedSubscriber = subscriberRepository.save(existing);
-        log.info("Subscriber with id {} updated successfully", updatedSubscriber.getId());
-        log.debug("Updated subscriber details: {}", updatedSubscriber); // Passes record toString()
-        return SubscriberMapper.toDto(updatedSubscriber);
+        //Commenting out save due to Hibernate's dirty checking
+       // Subscriber updatedSubscriber = subscriberRepository.save(existing);
+        log.info("Subscriber with id {} updated successfully", existing.getId());
+        log.debug("Updated subscriber details: {}", existing); // Passes record toString()
+        return SubscriberMapper.toDto(existing);
     }
 }
