@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 
@@ -50,6 +53,25 @@ public class Subscriber {
         this.planName = planName;
         this.status = status;
     }
+
+    //Subscriber can have 0 or more bills
+    @OneToMany(mappedBy="subscriber",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Bill> bills = new ArrayList<>();
+
+    //Helper method to add bills
+    public void addBill(Bill bill)
+    {
+        bills.add(bill);
+        bill.setSubscriber(this);
+    }
+
+    //Helper method to remove bills
+    public void removeBill(Bill bill)
+    {
+        bills.remove(bill);
+        bill.setSubscriber(null);
+    }
+
 
     @Override
     public String toString() {
