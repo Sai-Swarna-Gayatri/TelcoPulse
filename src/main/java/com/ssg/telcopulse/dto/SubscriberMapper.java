@@ -11,7 +11,8 @@ public class SubscriberMapper {
                     subscriber.getName(), 
                     subscriber.getMsisdn(),
                     subscriber.getPlanName(), 
-                    subscriber.getStatus());
+                    subscriber.getStatus(), 
+                    subscriber.getProfile());
     }
 
     //Request DTO to Database Entity

@@ -1,7 +1,11 @@
 package com.ssg.telcopulse.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,17 +41,17 @@ public class SubscriberProfile {
 
 
     //Subscriber profile existis only if there is a subscriber and one profile for one subscriber.foreign key is id from Subscriber table.
-    @OneToOne 
+   // @JsonIgnore 
+    @JsonBackReference 
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="subscriber_id", referencedColumnName="id", nullable=false, unique=true)
     private Subscriber subscriber;
 
 
     public SubscriberProfile(String email, String kycIdNumber, String billingAddress) {
-        System.out.println("In cinst of profile...."+ kycIdNumber);
         this.email = email;
         this.kycIdNumber = kycIdNumber;
         this.billingAddress = billingAddress;
-        System.out.println("Const kyc  " + this.kycIdNumber);
     }
 
 

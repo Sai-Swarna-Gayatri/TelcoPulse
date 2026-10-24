@@ -6,11 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
@@ -44,7 +48,8 @@ public class Subscriber {
     @Enumerated(EnumType.STRING)
     private SubscriberStatus status;
 
-    @OneToOne(mappedBy="subscriber", optional=true, cascade = CascadeType.REMOVE)
+    @JsonManagedReference 
+    @OneToOne(mappedBy="subscriber", optional=true, cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     private SubscriberProfile profile;
 
     public Subscriber(String name, String msisdn, String planName, SubscriberStatus status) {
@@ -55,7 +60,7 @@ public class Subscriber {
     }
 
     //Subscriber can have 0 or more bills
-    @OneToMany(mappedBy="subscriber",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy="subscriber",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Bill> bills = new ArrayList<>();
 
     //Helper method to add bills
