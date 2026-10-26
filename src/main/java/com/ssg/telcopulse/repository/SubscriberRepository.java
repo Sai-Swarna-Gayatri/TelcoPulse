@@ -29,5 +29,8 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> ,J
    // @Query(value = "SELECT * FROM subscribers WHERE status = 'ACTIVE'", nativeQuery = true)
    // List<Subscriber> findAllActiveSubscribersNative();
 
+   //Custom JPQL to resolve N+1 problem with JOIN FETCH
+    @Query("select distinct sub from Subscriber sub LEFT JOIN FETCH sub.billsLEFT JOIN FETCH sub.profile")
+    List<Subscriber> findAllWithBills();
 
 }

@@ -109,6 +109,7 @@ public class SubscriberService {
 
     public List<SubscriberWithBillsResponseDto> getSubscribersWithBills() {
         log.info("Fetching list of subscribers along with their bills to replicate N+1 problem");
-        return subscriberRepository.findAll().stream().map(SubscriberMapper::toBillsDto).toList();
+       // return subscriberRepository.findAll().stream().map(SubscriberMapper::toBillsDto).toList();
+        return subscriberRepository.findAllWithBills().stream().map(SubscriberMapper::toBillsDto).toList();
     }
 }
