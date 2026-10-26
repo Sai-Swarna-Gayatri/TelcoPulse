@@ -1,5 +1,6 @@
 package com.ssg.telcopulse.service;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -7,15 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
+import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.repository.SubscriberRepository;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.repository.specification.SubscriberSpecification;
-
 import jakarta.transaction.Transactional;
-
 import org.springframework.data.jpa.domain.Specification;
 
 @Service
@@ -105,5 +105,10 @@ public class SubscriberService {
         log.info("Subscriber with id {} updated successfully", existing.getId());
         log.debug("Updated subscriber details: {}", existing); // Passes record toString()
         return SubscriberMapper.toDto(existing);
+    }
+
+    public List<SubscriberWithBillsResponseDto> getSubscribersWithBills() {
+        log.info("Fetching list of subscribers along with their bills to replicate N+1 problem");
+        return subscriberRepository.findAll().stream().map(SubscriberMapper::toBillsDto).toList();
     }
 }

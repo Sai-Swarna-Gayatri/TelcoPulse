@@ -1,4 +1,7 @@
 package com.ssg.telcopulse.dto;
+import java.util.List;
+
+import com.ssg.telcopulse.model.Bill;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.model.SubscriberStatus;
 
@@ -12,7 +15,7 @@ public class SubscriberMapper {
                     subscriber.getMsisdn(),
                     subscriber.getPlanName(), 
                     subscriber.getStatus(), 
-                    subscriber.getProfile());
+                    SubscriberProfileMapper.toDto(subscriber.getProfile()));
     }
 
     //Request DTO to Database Entity
@@ -24,5 +27,18 @@ public class SubscriberMapper {
             requestDto.planName(),
             requestDto.status() != null ? requestDto.status() : SubscriberStatus.PENDING
         );
+    }
+
+
+      public static SubscriberWithBillsResponseDto toBillsDto(Subscriber subscriber) {
+        List<Bill> bill = subscriber.getBills();
+        return new SubscriberWithBillsResponseDto(
+                    subscriber.getId(),
+                    subscriber.getName(), 
+                    subscriber.getMsisdn(),
+                    subscriber.getPlanName(), 
+                    subscriber.getStatus(), 
+                    SubscriberProfileMapper.toDto(subscriber.getProfile()),
+                    bill.stream().map(BillMapper::toDto).toList());
     }
 }

@@ -4,10 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
+import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.service.SubscriberService;
 
@@ -27,6 +29,14 @@ public class SubscriberController {
     @GetMapping
     public ResponseEntity<Page<SubscriberResponseDto>> getAllSubscribers(@RequestParam(required=false) String name,@RequestParam(required=false) SubscriberStatus status, @RequestParam(required=false) String planName,@RequestParam(required=false) String msisdn,Pageable pageable) {
         return ResponseEntity.ok(subscriberService.getAllSubscribers(name,status,planName,msisdn,pageable));
+    }
+
+    //Replicating N+1 problem by loading bills for each subscriber along with subscriber list
+    @GetMapping("/withBills")
+    public ResponseEntity<List<SubscriberWithBillsResponseDto>> getSubscribersWithBills()
+    {
+        List<SubscriberWithBillsResponseDto> billList= subscriberService.getSubscribersWithBills();
+        return ResponseEntity.ok(billList);
     }
 
     //Static Filter

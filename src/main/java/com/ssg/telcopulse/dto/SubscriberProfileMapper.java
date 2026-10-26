@@ -13,6 +13,10 @@ public class SubscriberProfileMapper {
     public static SubscriberProfileResponseDto toDto(SubscriberProfile profile)
     {
         //Database Entity to Response DTO
+        if(profile==null)
+        {
+            return null;
+        }
         return new SubscriberProfileResponseDto(profile.getId(),profile.getEmail(),profile.getKycIdNumber(),profile.getBillingAddress());
     }
 
