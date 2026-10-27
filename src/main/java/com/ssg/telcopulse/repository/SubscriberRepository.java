@@ -4,12 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.model.SubscriberStatus;
-
 import java.util.List;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -30,7 +27,10 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> ,J
    // List<Subscriber> findAllActiveSubscribersNative();
 
    //Custom JPQL to resolve N+1 problem with JOIN FETCH
-    @Query("select distinct sub from Subscriber sub LEFT JOIN FETCH sub.billsLEFT JOIN FETCH sub.profile")
+    @Query("select distinct sub from Subscriber sub LEFT JOIN FETCH sub.bills LEFT JOIN FETCH sub.profile")
     List<Subscriber> findAllWithBills();
+
+    @Query("select distinct sub from Subscriber sub LEFT JOIN FETCH sub.addon")
+    List<Subscriber> findAllWithAddOn();
 
 }

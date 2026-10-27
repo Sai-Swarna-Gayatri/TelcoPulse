@@ -1,6 +1,7 @@
 package com.ssg.telcopulse.dto;
 import java.util.List;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 import com.ssg.telcopulse.model.Bill;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.model.SubscriberStatus;
@@ -41,4 +42,16 @@ public class SubscriberMapper {
                     SubscriberProfileMapper.toDto(subscriber.getProfile()),
                     bill.stream().map(BillMapper::toDto).toList());
     }
+
+     public static SubscriberWithAddonPackageResponseDto toAddonDto(Subscriber subscriber) {
+        Set<AddonPackageResponseDto> addOn = subscriber.getAddon().stream().map(AddonMapper::toDto).collect(Collectors.toSet());
+        return new SubscriberWithAddonPackageResponseDto(
+                    subscriber.getId(),
+                    subscriber.getName(), 
+                    subscriber.getMsisdn(),
+                    subscriber.getPlanName(), 
+                    subscriber.getStatus(), 
+                    addOn);
+    }
+    
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
+import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.service.SubscriberService;
@@ -75,6 +76,21 @@ public class SubscriberController {
     @PutMapping("/{id}")
     public ResponseEntity<SubscriberResponseDto> updateSubscriber(@PathVariable Long id,@Valid @RequestBody SubscriberRequestDto requestSubscriber) {
              return ResponseEntity.ok(subscriberService.updateSubscriber(id,requestSubscriber));
+    }
+
+
+    @PostMapping("/{subscriberId}/addons/{addonId}")
+    public ResponseEntity<SubscriberResponseDto> assignAddon(@PathVariable Long subscriberId,@PathVariable Long addonId) {   
+        SubscriberResponseDto responseDto = subscriberService.assignAddonPackage(subscriberId, addonId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+     //Loading list of susbcribers along with their add on package details
+    @GetMapping("/withAddonPackages")
+    public ResponseEntity<List<SubscriberWithAddonPackageResponseDto>> getSubscribersWithAddonPackages()
+    {
+        List<SubscriberWithAddonPackageResponseDto> withAddon= subscriberService.getSubscribersWithAddonPackages();
+        return ResponseEntity.ok(withAddon);
     }
 
 }

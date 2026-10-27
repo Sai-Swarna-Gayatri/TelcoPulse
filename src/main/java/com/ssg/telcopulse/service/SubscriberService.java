@@ -8,10 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
+import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
+import com.ssg.telcopulse.model.AddonPackage;
 import com.ssg.telcopulse.model.Subscriber;
+import com.ssg.telcopulse.repository.AddonPackageRepository;
 import com.ssg.telcopulse.repository.SubscriberRepository;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.repository.specification.SubscriberSpecification;
@@ -22,12 +25,14 @@ import org.springframework.data.jpa.domain.Specification;
 public class SubscriberService {
 
     private final SubscriberRepository subscriberRepository;
+    private final AddonPackageRepository addonPackageRepository;
 
     private static final Logger log = LoggerFactory.getLogger(SubscriberService.class);
 
-    public SubscriberService(SubscriberRepository subscriberRepository) {
+    public SubscriberService(SubscriberRepository subscriberRepository,AddonPackageRepository addonPackageRepository) {
         // constructor injection
         this.subscriberRepository = subscriberRepository;
+        this.addonPackageRepository = addonPackageRepository;
 
         // Pre-populate seed data if table is empty
         if (subscriberRepository.count() == 0) {
@@ -111,5 +116,37 @@ public class SubscriberService {
         log.info("Fetching list of subscribers along with their bills to replicate N+1 problem");
        // return subscriberRepository.findAll().stream().map(SubscriberMapper::toBillsDto).toList();
         return subscriberRepository.findAllWithBills().stream().map(SubscriberMapper::toBillsDto).toList();
+    }
+
+    @Transactional 
+    public SubscriberResponseDto assignAddonPackage(Long subscriberId,Long addonId)
+    {
+        log.info("Assigning addon package id {} to subscriber with id {} ", addonId,subscriberId);
+
+        //fetching subscriber
+        Subscriber subscriber = subscriberRepository.findById(subscriberId).orElseThrow(()-> new SubscriberNotFoundException(subscriberId));
+
+        //fetching addon
+        AddonPackage addon = addonPackageRepository.findById(addonId).orElseThrow(() -> new RuntimeException("Add-on package not found with ID: " + addonId));
+
+        //check if subscriber already has this add on 
+        if(subscriber.getAddon().contains(addon))
+        {
+            log.debug("Subscriber already opted for "+ addon.getPackageName() +" addon." );
+            throw new IllegalArgumentException("Subscriber already opted for "+ addon.getPackageName() +" addon." );
+        }
+
+        //Calling helper method to syns both sides in memory
+        subscriber.addAddOnPackage(addon);
+        log.info("Addon "+ addon.getPackageName() +" saved for the Subscriber " );
+
+        return SubscriberMapper.toDto(subscriber);
+
+    }
+
+    public List<SubscriberWithAddonPackageResponseDto> getSubscribersWithAddonPackages() {
+              log.info("Fetching list of subscribers along with their Add-on packages....");
+              List<SubscriberWithAddonPackageResponseDto>  subscriberWithAddon= subscriberRepository.findAllWithAddOn().stream().map(SubscriberMapper::toAddonDto).toList();
+              return subscriberWithAddon;
     }
 }
