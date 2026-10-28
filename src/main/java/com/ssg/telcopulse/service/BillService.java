@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.ssg.telcopulse.dto.BillMapper;
 import com.ssg.telcopulse.dto.BillRequestDto;
 import com.ssg.telcopulse.dto.BillResponseDto;
+import com.ssg.telcopulse.dto.BillSummaryDto;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
 import com.ssg.telcopulse.model.Bill;
 import com.ssg.telcopulse.model.Subscriber;
@@ -36,10 +37,11 @@ public class BillService {
         return BillMapper.toDto(createdBill);
     }
 
-    public List<BillResponseDto> getBillsForASubscriber(Long subscriberId)
+    public List<BillSummaryDto> getBillsForASubscriber(Long subscriberId)
     {
         log.info("Fetching all bills for subscriber ID: {}", subscriberId);
-        return billRepository.findBySubscriberId(subscriberId).stream().map(BillMapper::toDto).toList();
+        //Using DTO Porjections to fetch subscriber name and msisdn along with bill details
+        return billRepository.findBySubscriberId(subscriberId);
     }
 
 

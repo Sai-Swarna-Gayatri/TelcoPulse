@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ssg.telcopulse.dto.BillRequestDto;
 import com.ssg.telcopulse.dto.BillResponseDto;
+import com.ssg.telcopulse.dto.BillSummaryDto;
 import com.ssg.telcopulse.service.BillService;
 
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class BillController {
 
 
     @GetMapping 
-    public ResponseEntity<List<BillResponseDto>> getBillsForASubscriber(@PathVariable Long subscriberId)
+    public ResponseEntity<List<BillSummaryDto>> getBillsForASubscriber(@PathVariable Long subscriberId)
     {
         return ResponseEntity.ok(billService.getBillsForASubscriber(subscriberId));
         
