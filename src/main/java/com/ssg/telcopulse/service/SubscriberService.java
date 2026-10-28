@@ -10,6 +10,7 @@ import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
+import com.ssg.telcopulse.dto.AssignAddonsRequestDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
 import com.ssg.telcopulse.model.AddonPackage;
@@ -29,7 +30,7 @@ public class SubscriberService {
 
     private static final Logger log = LoggerFactory.getLogger(SubscriberService.class);
 
-    public SubscriberService(SubscriberRepository subscriberRepository,AddonPackageRepository addonPackageRepository) {
+    public SubscriberService(SubscriberRepository subscriberRepository, AddonPackageRepository addonPackageRepository) {
         // constructor injection
         this.subscriberRepository = subscriberRepository;
         this.addonPackageRepository = addonPackageRepository;
@@ -93,7 +94,7 @@ public class SubscriberService {
         log.info("Deleted subscriber with id {}", id);
     }
 
-    @Transactional 
+    @Transactional
     public SubscriberResponseDto updateSubscriber(Long id, SubscriberRequestDto givenSubscriber) {
         if (id == null || givenSubscriber == null) {
             log.warn("Update failed: invalid or null subscriber input provided");
@@ -105,8 +106,8 @@ public class SubscriberService {
         existing.setPlanName(givenSubscriber.planName());
         existing.setStatus(givenSubscriber.status());
 
-        //Commenting out save due to Hibernate's dirty checking
-       // Subscriber updatedSubscriber = subscriberRepository.save(existing);
+        // Commenting out save due to Hibernate's dirty checking
+        // Subscriber updatedSubscriber = subscriberRepository.save(existing);
         log.info("Subscriber with id {} updated successfully", existing.getId());
         log.debug("Updated subscriber details: {}", existing); // Passes record toString()
         return SubscriberMapper.toDto(existing);
@@ -114,39 +115,67 @@ public class SubscriberService {
 
     public List<SubscriberWithBillsResponseDto> getSubscribersWithBills() {
         log.info("Fetching list of subscribers along with their bills to replicate N+1 problem");
-       // return subscriberRepository.findAll().stream().map(SubscriberMapper::toBillsDto).toList();
+        // return
+        // subscriberRepository.findAll().stream().map(SubscriberMapper::toBillsDto).toList();
         return subscriberRepository.findAllWithBills().stream().map(SubscriberMapper::toBillsDto).toList();
     }
 
-    @Transactional 
-    public SubscriberResponseDto assignAddonPackage(Long subscriberId,Long addonId)
-    {
-        log.info("Assigning addon package id {} to subscriber with id {} ", addonId,subscriberId);
+    @Transactional
+    public SubscriberWithAddonPackageResponseDto assignAddonPackage(Long subscriberId, Long addonId) {
+        log.info("Assigning addon package id {} to subscriber with id {} ", addonId, subscriberId);
 
-        //fetching subscriber
-        Subscriber subscriber = subscriberRepository.findById(subscriberId).orElseThrow(()-> new SubscriberNotFoundException(subscriberId));
+        // fetching subscriber
+        Subscriber subscriber = subscriberRepository.findById(subscriberId)
+                .orElseThrow(() -> new SubscriberNotFoundException(subscriberId));
 
-        //fetching addon
-        AddonPackage addon = addonPackageRepository.findById(addonId).orElseThrow(() -> new RuntimeException("Add-on package not found with ID: " + addonId));
+        // fetching addon
+        AddonPackage addon = addonPackageRepository.findById(addonId)
+                .orElseThrow(() -> new RuntimeException("Add-on package not found with ID: " + addonId));
 
-        //check if subscriber already has this add on 
-        if(subscriber.getAddon().contains(addon))
-        {
-            log.debug("Subscriber already opted for "+ addon.getPackageName() +" addon." );
-            throw new IllegalArgumentException("Subscriber already opted for "+ addon.getPackageName() +" addon." );
+        // check if subscriber already has this add on
+        if (subscriber.getAddon().contains(addon)) {
+            log.debug("Subscriber already opted for " + addon.getPackageName() + " addon.");
+            throw new IllegalArgumentException("Subscriber already opted for " + addon.getPackageName() + " addon.");
         }
 
-        //Calling helper method to syns both sides in memory
+        // Calling helper method to syns both sides in memory
         subscriber.addAddOnPackage(addon);
-        log.info("Addon "+ addon.getPackageName() +" saved for the Subscriber " );
+        log.info("Addon " + addon.getPackageName() + " saved for the Subscriber ");
 
-        return SubscriberMapper.toDto(subscriber);
+        return SubscriberMapper.toAddonDto(subscriber);
+
+    }
+
+    @Transactional 
+    public SubscriberWithAddonPackageResponseDto assignMultipleAddons(Long subscriberId,
+            AssignAddonsRequestDto request) {
+        log.info("Assigning list of addons to subscriber with id {} ", subscriberId);
+
+        // fetching subscriber
+        Subscriber subscriber = subscriberRepository.findById(subscriberId)
+                .orElseThrow(() -> new SubscriberNotFoundException(subscriberId));
+
+        // fetching all requested addon details
+        List<AddonPackage> requestAddons = addonPackageRepository.findAllById(request.addonIds());
+
+        // Ensuring all requested IDs actually exist in the database
+        if (requestAddons.size() != request.addonIds().size()) {
+            throw new RuntimeException("One or more invalid Add-on IDs were provided.");
+        }
+
+        for(AddonPackage addon : requestAddons)
+        {
+            subscriber.addAddOnPackage(addon);
+            log.debug("Added package '{}' to subscriber ID {}", addon.getPackageName(), subscriberId);
+        }
+          return SubscriberMapper.toAddonDto(subscriber);
 
     }
 
     public List<SubscriberWithAddonPackageResponseDto> getSubscribersWithAddonPackages() {
-              log.info("Fetching list of subscribers along with their Add-on packages....");
-              List<SubscriberWithAddonPackageResponseDto>  subscriberWithAddon= subscriberRepository.findAllWithAddOn().stream().map(SubscriberMapper::toAddonDto).toList();
-              return subscriberWithAddon;
+        log.info("Fetching list of subscribers along with their Add-on packages....");
+        List<SubscriberWithAddonPackageResponseDto> subscriberWithAddon = subscriberRepository.findAllWithAddOn()
+                .stream().map(SubscriberMapper::toAddonDto).toList();
+        return subscriberWithAddon;
     }
 }

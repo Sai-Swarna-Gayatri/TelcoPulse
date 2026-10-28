@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import com.ssg.telcopulse.dto.AssignAddonsRequestDto;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
@@ -80,8 +82,14 @@ public class SubscriberController {
 
 
     @PostMapping("/{subscriberId}/addons/{addonId}")
-    public ResponseEntity<SubscriberResponseDto> assignAddon(@PathVariable Long subscriberId,@PathVariable Long addonId) {   
-        SubscriberResponseDto responseDto = subscriberService.assignAddonPackage(subscriberId, addonId);
+    public ResponseEntity<SubscriberWithAddonPackageResponseDto> assignAddon(@PathVariable Long subscriberId,@PathVariable Long addonId) {   
+        SubscriberWithAddonPackageResponseDto responseDto = subscriberService.assignAddonPackage(subscriberId, addonId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/{subscriberId}/addons")
+    public ResponseEntity<SubscriberWithAddonPackageResponseDto> assignMultipleAddon(@PathVariable Long subscriberId,@Valid @RequestBody AssignAddonsRequestDto request) {   
+        SubscriberWithAddonPackageResponseDto responseDto = subscriberService.assignMultipleAddons(subscriberId, request);
         return ResponseEntity.ok(responseDto);
     }
 
