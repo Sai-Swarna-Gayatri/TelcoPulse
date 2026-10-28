@@ -24,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @Entity
 @Table(name=  "subscriber_profile")
-public class SubscriberProfile {
+public class SubscriberProfile extends Auditable {
 
     @Id 
     @GeneratedValue(strategy=GenerationType.IDENTITY)

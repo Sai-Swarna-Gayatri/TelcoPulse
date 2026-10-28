@@ -21,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor 
 @Entity 
 @Table(name="Addon_Package")
-public class AddonPackage {
+public class AddonPackage extends Auditable{
 
     @Id 
     @GeneratedValue(strategy=GenerationType.SEQUENCE)

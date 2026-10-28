@@ -32,7 +32,7 @@ import jakarta.persistence.OneToOne;
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @Entity
 @Table(name="subscribers")
-public class Subscriber {
+public class Subscriber extends Auditable{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

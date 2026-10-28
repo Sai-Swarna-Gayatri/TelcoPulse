@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter 
 @NoArgsConstructor 
 @Entity
-public class Bill {
+public class Bill extends Auditable{
 
     @Id 
     @GeneratedValue(strategy=GenerationType.IDENTITY)
