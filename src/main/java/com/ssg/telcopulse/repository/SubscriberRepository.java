@@ -33,4 +33,6 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> ,J
     @Query("select distinct sub from Subscriber sub LEFT JOIN FETCH sub.addon")
     List<Subscriber> findAllWithAddOn();
 
+    boolean existsByMsisdn(String msisdn);
+
 }

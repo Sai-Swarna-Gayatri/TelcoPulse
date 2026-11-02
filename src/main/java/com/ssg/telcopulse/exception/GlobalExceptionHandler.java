@@ -28,10 +28,27 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(DuplicateMsisdnException.class)
+    public ResponseEntity<SubscriberErrorResponse> handleDuplicateMsisdn(DuplicateMsisdnException ex)
+    {
+        log.warn("Msisdn already exists for another user ");
+        SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.CONFLICT);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+
+    }
+
     @ExceptionHandler({IllegalArgumentException.class,MissingServletRequestParameterException.class})
     public ResponseEntity<SubscriberErrorResponse> handleIllegalArgument(Exception ex)
     {
         log.warn("Invalid Input provided {} " ,ex.getMessage());
+        SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(InvalidSearchParameterException.class)
+    public ResponseEntity<SubscriberErrorResponse> handleInvalidParameterException(InvalidSearchParameterException ex)
+    {
+        log.warn("Invalid search parameter names " ,ex.getMessage());
         SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

@@ -1,7 +1,6 @@
 package com.ssg.telcopulse.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import com.ssg.telcopulse.dto.BillRequestDto;
 import com.ssg.telcopulse.dto.BillResponseDto;
 import com.ssg.telcopulse.dto.BillSummaryDto;
 import com.ssg.telcopulse.service.BillService;
-
 import jakarta.validation.Valid;
 
 @RestController 

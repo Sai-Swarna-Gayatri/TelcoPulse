@@ -12,6 +12,7 @@ import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
 import com.ssg.telcopulse.dto.AssignAddonsRequestDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
+import com.ssg.telcopulse.exception.DuplicateMsisdnException;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
 import com.ssg.telcopulse.model.AddonPackage;
 import com.ssg.telcopulse.model.Subscriber;
@@ -75,9 +76,18 @@ public class SubscriberService {
 
     public SubscriberResponseDto createSubscriber(SubscriberRequestDto requestDto) {
         Subscriber input = SubscriberMapper.toEntity(requestDto);
+        checkDuplicateMsisdn(input.getMsisdn());
         Subscriber created = subscriberRepository.save(input);
         log.info("Creating new subscriber with id {} ", created.getId());
         return SubscriberMapper.toDto(created);
+    }
+
+    private void checkDuplicateMsisdn(String msisdn)
+    {
+         boolean msisdnExists = subscriberRepository.existsByMsisdn(msisdn);
+            if (msisdnExists) {
+                throw new DuplicateMsisdnException(msisdn);   
+            }
     }
 
     public SubscriberResponseDto getSubscriberById(Long id) {
@@ -101,6 +111,9 @@ public class SubscriberService {
             throw new IllegalArgumentException("invalid or null subscriber input provided");
         }
         Subscriber existing = subscriberRepository.findById(id).orElseThrow(() -> new SubscriberNotFoundException(id));
+        if (!existing.getMsisdn().equals(givenSubscriber.msisdn())) {
+            checkDuplicateMsisdn(givenSubscriber.msisdn());
+        }
         existing.setName(givenSubscriber.name());
         existing.setMsisdn(givenSubscriber.msisdn());
         existing.setPlanName(givenSubscriber.planName());

@@ -2,9 +2,14 @@ package com.ssg.telcopulse.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,6 +18,7 @@ import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
 import com.ssg.telcopulse.dto.SubscriberWithBillsResponseDto;
+import com.ssg.telcopulse.exception.InvalidSearchParameterException;
 import com.ssg.telcopulse.model.SubscriberStatus;
 import com.ssg.telcopulse.service.SubscriberService;
 
@@ -20,6 +26,8 @@ import com.ssg.telcopulse.service.SubscriberService;
 @RequestMapping("/api/v1/subscribers")
 public class SubscriberController {
     private final SubscriberService subscriberService;
+
+    private static final Set<String> ALLOWED_SEARCH_PARAMS = Set.of("msisdn", "name", "planName", "status", "page", "size");
 
     // Constructor Injection
     public SubscriberController(SubscriberService subscriberService) {
@@ -30,7 +38,14 @@ public class SubscriberController {
     // GET /api/v1/subscribers?page=0&size=2&sort=name,asc
     //Adding Dynamic Filter
     @GetMapping
-    public ResponseEntity<Page<SubscriberResponseDto>> getAllSubscribers(@RequestParam(required=false) String name,@RequestParam(required=false) SubscriberStatus status, @RequestParam(required=false) String planName,@RequestParam(required=false) String msisdn,Pageable pageable) {
+    public ResponseEntity<Page<SubscriberResponseDto>> getAllSubscribers(@RequestParam(required=false) String name,@RequestParam(required=false) SubscriberStatus status, @RequestParam(required=false) String planName,@RequestParam(required=false) String msisdn,Pageable pageable , @RequestParam MultiValueMap<String, String> allParams) {
+        Set<String> unknownParams = new HashSet<>(allParams.keySet());
+         unknownParams.removeAll(ALLOWED_SEARCH_PARAMS);
+
+        if (!unknownParams.isEmpty()) {
+            throw new InvalidSearchParameterException("Unknown query parameter(s): " + unknownParams);
+    }
+       
         return ResponseEntity.ok(subscriberService.getAllSubscribers(name,status,planName,msisdn,pageable));
     }
 

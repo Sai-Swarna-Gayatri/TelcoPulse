@@ -51,7 +51,6 @@ public class SubscriberProfileController {
     {
             subscriberProfileService.deleteSubscriberProfile(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-   
+    }   
 
     }
