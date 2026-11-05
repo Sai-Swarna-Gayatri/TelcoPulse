@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssg.telcopulse.dto.SubscriberProfileRequestDto;
 import com.ssg.telcopulse.dto.SubscriberProfileResponseDto;
 import com.ssg.telcopulse.service.SubscriberProfileService;
-
 import jakarta.validation.Valid;
 
 @RestController 

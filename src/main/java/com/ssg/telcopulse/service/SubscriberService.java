@@ -37,13 +37,13 @@ public class SubscriberService {
         this.addonPackageRepository = addonPackageRepository;
 
         // Pre-populate seed data if table is empty
-        if (subscriberRepository.count() == 0) {
+      /*   if (subscriberRepository.count() == 0) {
             log.info("Initializing seed data subscribers to H2 database...");
             subscriberRepository
                     .save(new Subscriber("John Doe", "+14045550199", "5G Unlimited", SubscriberStatus.ACTIVE));
             subscriberRepository
                     .save(new Subscriber("Jane Smith", "+14045550288", "Prepaid Lite", SubscriberStatus.PENDING));
-        }
+        } */
     }
 
     // Paginated Data
