@@ -1,9 +1,16 @@
 package com.ssg.telcopulse.service;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,12 +21,18 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import org.mockito.ArgumentCaptor;
+import com.ssg.telcopulse.dto.SubscriberWithAddonPackageResponseDto;
+import com.ssg.telcopulse.dto.AddonPackageResponseDto;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
+import com.ssg.telcopulse.exception.AddonPackageNotFoundException;
 import com.ssg.telcopulse.exception.DuplicateMsisdnException;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
+import com.ssg.telcopulse.model.AddonPackage;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.model.SubscriberStatus;
+import com.ssg.telcopulse.repository.AddonPackageRepository;
 import com.ssg.telcopulse.repository.SubscriberRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +40,9 @@ public class SubscriberServiceTest {
 
       @Mock  
       private SubscriberRepository subscriberRepository;
+
+      @Mock
+      private AddonPackageRepository addonPackageRepository;
 
       @InjectMocks 
       private SubscriberService subscriberService;
@@ -79,16 +95,21 @@ public class SubscriberServiceTest {
             //Stubbing
             SubscriberRequestDto requestDto = new SubscriberRequestDto("Rob James","+1122334455","Basic",SubscriberStatus.PENDING);
 
-            Subscriber subscriberMock = new Subscriber(requestDto.name(),requestDto.msisdn(),requestDto.planName(),requestDto.status());
-            subscriberMock.setId(100L);
+           // Subscriber subscriberMock = new Subscriber(requestDto.name(),requestDto.msisdn(),requestDto.planName(),requestDto.status());
+            //subscriberMock.setId(100L);
             when(subscriberRepository.existsByMsisdn(requestDto.msisdn())).thenReturn(false);
   
-            when(subscriberRepository.save(any(Subscriber.class))).thenReturn(subscriberMock);
+            when(subscriberRepository.save(any(Subscriber.class))).thenAnswer(invocation-> 
+            {Subscriber subscriberToSave = invocation.getArgument(0);
+            subscriberToSave.setId(1L);
+            return subscriberToSave;
+            });
 
             SubscriberResponseDto response = subscriberService.createSubscriber(requestDto);
 
             //Assertions
             assertNotNull(response);
+            assertEquals(1L,response.id());
             assertEquals("Rob James",response.name());
             assertEquals("+1122334455", response.msisdn());
             assertEquals(SubscriberStatus.PENDING, response.status());
@@ -98,6 +119,37 @@ public class SubscriberServiceTest {
       }
 
 
+      @Test 
+      void shouldCreateSubscriber_mapDtoFieldsCorrectly()
+      {
+            //Stubbing
+            SubscriberRequestDto requestDto = new SubscriberRequestDto("Rob James","+1122334455","Basic",SubscriberStatus.PENDING);
+
+            ArgumentCaptor<Subscriber> subscriberCaptor = ArgumentCaptor.forClass(Subscriber.class) ;
+
+            when(subscriberRepository.existsByMsisdn(requestDto.msisdn())).thenReturn(false);
+  
+            when(subscriberRepository.save(any(Subscriber.class))).thenAnswer(invocation-> 
+            {Subscriber subscriberToSave = invocation.getArgument(0);
+            subscriberToSave.setId(1L);
+            return subscriberToSave;
+            });
+
+            subscriberService.createSubscriber(requestDto);
+
+            verify(subscriberRepository).existsByMsisdn(requestDto.msisdn());
+            verify(subscriberRepository).save(subscriberCaptor.capture());
+
+            Subscriber captured = subscriberCaptor.getValue();
+
+            //Assertions
+            assertNotNull(captured);
+            assertEquals(1L,captured.getId());
+            assertEquals("Rob James",captured.getName());
+            assertEquals("+1122334455", captured.getMsisdn());
+            assertEquals(SubscriberStatus.PENDING, captured.getStatus());
+                  
+      }
 
       @Test 
       void shouldCreateSubscriber_DuplicateMsisdn()
@@ -244,6 +296,139 @@ public class SubscriberServiceTest {
 
             verify(subscriberRepository,never()).delete(any(Subscriber.class));
       }
+
+
+      @Test
+      void shouldAssignAddonPackage_Success()
+      {
+            Long subscriberId= 1L;
+            Long addonId = 101L;
+
+
+            Subscriber subscriber = new Subscriber("Alice Bob", "+1234567890", "Premium", SubscriberStatus.ACTIVE);
+            subscriber.setId(subscriberId);
+
+            Set<Subscriber> subscriberSet = new HashSet<>();
+
+            AddonPackage addOn = new AddonPackage(101L, "Unlimited SMS", new BigDecimal("120.00"), subscriberSet);
+
+            when(subscriberRepository.findById(subscriberId)).thenReturn(Optional.of(subscriber));
+
+            when(addonPackageRepository.findById(addonId)).thenReturn(Optional.of(addOn));
+            
+            
+            SubscriberWithAddonPackageResponseDto response= subscriberService.assignAddonPackage(subscriberId,addonId);
+
+            assertEquals("Alice Bob",response.name());
+
+            assertEquals(1,response.addOnPackages().size());
+
+            AddonPackageResponseDto addonDto =
+            response.addOnPackages().iterator().next();
+
+            assertEquals(101L, addonDto.id());
+            assertEquals("Unlimited SMS", addonDto.packageName());
+            assertEquals(0, new BigDecimal("120.00").compareTo(addonDto.price()));
+
+            assertTrue(subscriber.getAddon().contains(addOn));
+            assertTrue(addOn.getSubscribers().contains(subscriber));
+
+            
+            verify(subscriberRepository).findById(subscriberId);
+
+            verify(addonPackageRepository).findById(addonId);
+
+            verify(subscriberRepository,never()).save(any(Subscriber.class));
+
+      }
+
+
+      @Test
+      void shouldAssignAddonPackage_subscriberNotFound()
+      {
+            Long subscriberId= 100L;
+            Long addonId=101L;
+
+            when(subscriberRepository.findById(subscriberId)).thenReturn(Optional.empty());
+
+            SubscriberNotFoundException exception =assertThrows(SubscriberNotFoundException.class,()->subscriberService.assignAddonPackage(subscriberId,addonId));
+
+            assertEquals("Subscriber with ID "+subscriberId+" not found",exception.getMessage());
+
+            verify(subscriberRepository).findById(subscriberId);
+
+            verify(addonPackageRepository,never()).findById(addonId);
+
+            verify(subscriberRepository,never()).save(any(Subscriber.class));
+
+      }
+
+
+
+       @Test
+      void shouldAssignAddonPackage_addonNotFound()
+      {
+            Long subscriberId= 100L;
+            Long addonId=101L;
+
+            Subscriber subscriber = new Subscriber("Alice Bob", "+1234567890", "Premium", SubscriberStatus.ACTIVE);
+            subscriber.setId(subscriberId);
+
+            when(subscriberRepository.findById(subscriberId)).thenReturn(Optional.of(subscriber));
+
+            when(addonPackageRepository.findById(addonId)).thenReturn(Optional.empty());
+
+            AddonPackageNotFoundException exception =assertThrows(AddonPackageNotFoundException.class,()->subscriberService.assignAddonPackage(subscriberId,addonId));
+
+            assertEquals("Add-on package not found with ID: " + addonId,exception.getMessage());
+
+            verify(subscriberRepository).findById(subscriberId);
+
+            verify(addonPackageRepository).findById(addonId);
+
+            verify(subscriberRepository,never()).save(any(Subscriber.class));
+
+      }
+
+      @Test
+      void shouldAssignAddonPackage_subscriberAlreadyHasAddon()
+      {
+            Long subscriberId= 1L;
+            Long addonId = 101L;
+
+            Set<Subscriber> subscriberSet = new HashSet<>();
+            AddonPackage addon = new AddonPackage(101L, "Unlimited SMS", new BigDecimal("120.00"), subscriberSet);
+
+            Subscriber subscriber = new Subscriber("Alice Bob", "+1234567890", "Premium", SubscriberStatus.ACTIVE);
+            subscriber.setId(subscriberId);
+            subscriber.addAddOnPackage(addon);
+
+            when(subscriberRepository.findById(subscriberId)).thenReturn(Optional.of(subscriber));
+
+            when(addonPackageRepository.findById(addonId)).thenReturn(Optional.of(addon));
+            
+            IllegalArgumentException exception= assertThrows(IllegalArgumentException.class,()->subscriberService.assignAddonPackage(subscriberId,addonId));
+
+            assertEquals("Subscriber already opted for " + addon.getPackageName() + " addon.",exception.getMessage());
+
+            //checking existing relation is not broken
+            assertEquals(1, subscriber.getAddon().size());
+            assertTrue(subscriber.getAddon().contains(addon));
+
+            verify(subscriberRepository).findById(subscriberId);
+
+            verify(addonPackageRepository).findById(addonId);
+
+            verify(subscriberRepository,never()).save(any(Subscriber.class));
+
+      }
+
+
+
+
+
+
+
 
 
 

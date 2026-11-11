@@ -28,6 +28,15 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(AddonPackageNotFoundException.class)
+    public ResponseEntity<SubscriberErrorResponse> handleAddonPackageNotFoundException(AddonPackageNotFoundException ex)
+    {
+        log.warn("Resource not found {} " ,ex.getMessage());
+        SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
+    }
+
     @ExceptionHandler(DuplicateMsisdnException.class)
     public ResponseEntity<SubscriberErrorResponse> handleDuplicateMsisdn(DuplicateMsisdnException ex)
     {

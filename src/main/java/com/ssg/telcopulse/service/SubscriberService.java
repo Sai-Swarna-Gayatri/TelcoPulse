@@ -14,6 +14,7 @@ import com.ssg.telcopulse.dto.AssignAddonsRequestDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
 import com.ssg.telcopulse.exception.DuplicateMsisdnException;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
+import com.ssg.telcopulse.exception.AddonPackageNotFoundException;
 import com.ssg.telcopulse.model.AddonPackage;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.repository.AddonPackageRepository;
@@ -143,7 +144,7 @@ public class SubscriberService {
 
         // fetching addon
         AddonPackage addon = addonPackageRepository.findById(addonId)
-                .orElseThrow(() -> new RuntimeException("Add-on package not found with ID: " + addonId));
+                .orElseThrow(() -> new AddonPackageNotFoundException(addonId));
 
         // check if subscriber already has this add on
         if (subscriber.getAddon().contains(addon)) {
@@ -173,7 +174,7 @@ public class SubscriberService {
 
         // Ensuring all requested IDs actually exist in the database
         if (requestAddons.size() != request.addonIds().size()) {
-            throw new RuntimeException("One or more invalid Add-on IDs were provided.");
+            throw new AddonPackageNotFoundException("One or more invalid Add-on IDs were provided.");
         }
 
         for(AddonPackage addon : requestAddons)
