@@ -107,10 +107,12 @@ public class SubscriberService {
 
     @Transactional
     public SubscriberResponseDto updateSubscriber(Long id, SubscriberRequestDto givenSubscriber) {
-        if (id == null || givenSubscriber == null) {
+       /* 
+       controller can not pass null id or requestbody...this check is redundant
+       if (id == null || givenSubscriber == null) {
             log.warn("Update failed: invalid or null subscriber input provided");
             throw new IllegalArgumentException("invalid or null subscriber input provided");
-        }
+        } */
         Subscriber existing = subscriberRepository.findById(id).orElseThrow(() -> new SubscriberNotFoundException(id));
         if (!existing.getMsisdn().equals(givenSubscriber.msisdn())) {
             checkDuplicateMsisdn(givenSubscriber.msisdn());

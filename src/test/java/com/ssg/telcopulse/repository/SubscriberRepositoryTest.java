@@ -13,6 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import com.ssg.telcopulse.config.JpaAuditingConfig;
 import com.ssg.telcopulse.model.AddonPackage;
 import com.ssg.telcopulse.model.Bill;
 import com.ssg.telcopulse.model.BillStatus;
@@ -21,6 +23,7 @@ import com.ssg.telcopulse.model.SubscriberProfile;
 import com.ssg.telcopulse.model.SubscriberStatus;
 
 @DataJpaTest
+@Import(JpaAuditingConfig.class)
 public class SubscriberRepositoryTest {
 
     @Autowired
