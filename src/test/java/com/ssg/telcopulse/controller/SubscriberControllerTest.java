@@ -256,7 +256,7 @@ public class SubscriberControllerTest {
 
         SubscriberResponseDto response = new SubscriberResponseDto(subscriberId,"Test Name","+1122334455","Test Plan",SubscriberStatus.PENDING,null);
 
-        SubscriberRequestDto request = new SubscriberRequestDto("Test Name","+1122334455","Test Plan",SubscriberStatus.PENDING);
+        SubscriberRequestDto request = new SubscriberRequestDto("Test Name","+1122334455","Test Plan",null);
       
         when(subscriberService.createSubscriber(request)).thenReturn(response);
 

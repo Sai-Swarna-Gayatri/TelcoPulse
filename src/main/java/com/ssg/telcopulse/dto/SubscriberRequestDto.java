@@ -15,5 +15,4 @@ public record SubscriberRequestDto(
     String msisdn,
     @NotBlank(message = "Plan name is mandatory.")
     String planName,
-    @NotNull(message = "Subscriber status must be provided (e.g., ACTIVE or PENDING).")
     SubscriberStatus status) {}
