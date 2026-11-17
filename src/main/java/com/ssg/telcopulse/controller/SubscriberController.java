@@ -5,14 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import com.ssg.telcopulse.dto.AssignAddonsRequestDto;
 import com.ssg.telcopulse.dto.SubscriberRequestDto;
 import com.ssg.telcopulse.dto.SubscriberResponseDto;
@@ -44,7 +41,7 @@ public class SubscriberController {
 
         if (!unknownParams.isEmpty()) {
             throw new InvalidSearchParameterException("Unknown query parameter(s): " + unknownParams);
-    }
+        }
        
         return ResponseEntity.ok(subscriberService.getAllSubscribers(name,status,planName,msisdn,pageable));
     }

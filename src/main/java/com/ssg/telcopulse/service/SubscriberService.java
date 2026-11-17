@@ -14,6 +14,7 @@ import com.ssg.telcopulse.dto.AssignAddonsRequestDto;
 import com.ssg.telcopulse.dto.SubscriberMapper;
 import com.ssg.telcopulse.exception.DuplicateMsisdnException;
 import com.ssg.telcopulse.exception.SubscriberNotFoundException;
+import com.ssg.telcopulse.exception.AddonPackageNotFoundException;
 import com.ssg.telcopulse.model.AddonPackage;
 import com.ssg.telcopulse.model.Subscriber;
 import com.ssg.telcopulse.repository.AddonPackageRepository;
@@ -37,13 +38,13 @@ public class SubscriberService {
         this.addonPackageRepository = addonPackageRepository;
 
         // Pre-populate seed data if table is empty
-        if (subscriberRepository.count() == 0) {
+      /*   if (subscriberRepository.count() == 0) {
             log.info("Initializing seed data subscribers to H2 database...");
             subscriberRepository
                     .save(new Subscriber("John Doe", "+14045550199", "5G Unlimited", SubscriberStatus.ACTIVE));
             subscriberRepository
                     .save(new Subscriber("Jane Smith", "+14045550288", "Prepaid Lite", SubscriberStatus.PENDING));
-        }
+        } */
     }
 
     // Paginated Data
@@ -106,10 +107,12 @@ public class SubscriberService {
 
     @Transactional
     public SubscriberResponseDto updateSubscriber(Long id, SubscriberRequestDto givenSubscriber) {
-        if (id == null || givenSubscriber == null) {
+       /* 
+       controller can not pass null id or requestbody...this check is redundant
+       if (id == null || givenSubscriber == null) {
             log.warn("Update failed: invalid or null subscriber input provided");
             throw new IllegalArgumentException("invalid or null subscriber input provided");
-        }
+        } */
         Subscriber existing = subscriberRepository.findById(id).orElseThrow(() -> new SubscriberNotFoundException(id));
         if (!existing.getMsisdn().equals(givenSubscriber.msisdn())) {
             checkDuplicateMsisdn(givenSubscriber.msisdn());
@@ -143,7 +146,7 @@ public class SubscriberService {
 
         // fetching addon
         AddonPackage addon = addonPackageRepository.findById(addonId)
-                .orElseThrow(() -> new RuntimeException("Add-on package not found with ID: " + addonId));
+                .orElseThrow(() -> new AddonPackageNotFoundException(addonId));
 
         // check if subscriber already has this add on
         if (subscriber.getAddon().contains(addon)) {
@@ -173,7 +176,7 @@ public class SubscriberService {
 
         // Ensuring all requested IDs actually exist in the database
         if (requestAddons.size() != request.addonIds().size()) {
-            throw new RuntimeException("One or more invalid Add-on IDs were provided.");
+            throw new AddonPackageNotFoundException("One or more invalid Add-on IDs were provided.");
         }
 
         for(AddonPackage addon : requestAddons)

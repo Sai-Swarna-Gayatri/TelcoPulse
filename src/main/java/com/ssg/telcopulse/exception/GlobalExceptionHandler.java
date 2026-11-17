@@ -1,8 +1,9 @@
 package com.ssg.telcopulse.exception;
 import org.slf4j.LoggerFactory;
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SubscriberNotFoundException.class)
     public ResponseEntity<SubscriberErrorResponse> handleSubscriberNotFoundException(SubscriberNotFoundException ex)
+    {
+        log.warn("Resource not found {} " ,ex.getMessage());
+        SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
+    }
+
+    @ExceptionHandler(AddonPackageNotFoundException.class)
+    public ResponseEntity<SubscriberErrorResponse> handleAddonPackageNotFoundException(AddonPackageNotFoundException ex)
     {
         log.warn("Resource not found {} " ,ex.getMessage());
         SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.NOT_FOUND);
@@ -54,14 +64,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String,String>> handleValidationErrors(MethodArgumentNotValidException ex)
+    public ResponseEntity<Map<String,List<String>>> handleValidationErrors(MethodArgumentNotValidException ex)
     {
-        Map<String,String> errors=new HashMap<>();
+        Map<String,List<String>> errors=new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error->
             {
                 String fieldName = ((FieldError)error).getField();
                 String errorMessage = error.getDefaultMessage();
-                errors.put(fieldName,errorMessage);
+                errors.computeIfAbsent(fieldName, key -> new ArrayList<>()).add(errorMessage);
             }
         );
         log.warn("Validation Failed for {}",errors);

@@ -43,6 +43,12 @@ public class AddonPackage extends Auditable{
         this.subscribers = subscribers;
     }
 
+     public AddonPackage(String packageName, BigDecimal price, Set<Subscriber> subscribers) {
+        this.packageName = packageName;
+        this.price = price;
+        this.subscribers = subscribers;
+    }
+
     @Override
     public String toString() {
         return "AddonPackage [id=" + id + ", packageName=" + packageName + ", price=" + price + ", subscribers="
