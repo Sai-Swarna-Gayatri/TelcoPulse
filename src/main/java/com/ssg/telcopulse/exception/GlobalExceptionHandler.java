@@ -1,6 +1,6 @@
 package com.ssg.telcopulse.exception;
-import org.slf4j.LoggerFactory;
 
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +44,14 @@ public class GlobalExceptionHandler {
         log.warn("Msisdn already exists for another user ");
         SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.CONFLICT);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<SubscriberErrorResponse> handleDuplicateUser(DuplicateUserException ex)
+    {
+        log.warn("User Name already used");
+        SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.CONFLICT);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler({IllegalArgumentException.class,MissingServletRequestParameterException.class})
