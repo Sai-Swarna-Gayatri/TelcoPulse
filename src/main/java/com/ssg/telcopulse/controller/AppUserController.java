@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ssg.telcopulse.dto.AppUserRequestDto;
 import com.ssg.telcopulse.dto.AppUserResponseDto;
+import com.ssg.telcopulse.dto.LoginRequestDto;
 import com.ssg.telcopulse.service.AppUserService;
 import jakarta.validation.Valid;
 
@@ -22,9 +23,16 @@ public class AppUserController {
     }
 
     @PostMapping("/register")
-    ResponseEntity<AppUserResponseDto> createUser(@RequestBody @Valid AppUserRequestDto userDto)
+    public ResponseEntity<AppUserResponseDto> createUser(@RequestBody @Valid AppUserRequestDto userDto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(appUserService.createUser(userDto));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Void> loginUser(@RequestBody LoginRequestDto request)
+    {
+        appUserService.loginUser(request);
+        return ResponseEntity.ok().build();
     }
 
 }

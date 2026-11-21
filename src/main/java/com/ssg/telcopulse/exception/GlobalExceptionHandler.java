@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -68,6 +69,14 @@ public class GlobalExceptionHandler {
         log.warn("Invalid search parameter names " ,ex.getMessage());
         SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<SubscriberErrorResponse> handleBadCredentials(BadCredentialsException ex)
+    {
+        log.warn("Invalid username or password.User not authenticated"); 
+        SubscriberErrorResponse error = new SubscriberErrorResponse(ex.getMessage(),HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
